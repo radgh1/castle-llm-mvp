@@ -31,7 +31,7 @@ cd c:\Users\idten\OneDrive\source\repos\ChatGPT\castle-llm-mvp
 
 # Create a GitHub repo first at https://github.com/new
 # Then:
-git remote add origin https://github.com/YOUR_USERNAME/castle-llm-mvp.git
+git remote add origin https://github.com/radgh1/castle-llm-mvp.git
 git branch -M main
 git push -u origin main
 ```
