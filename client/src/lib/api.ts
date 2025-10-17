@@ -1,5 +1,5 @@
 // Content omitted for brevity; see ChatGPT document for full source.
-export const API_BASE = '/api';
+import { API_BASE } from './config';
 
 // Document Ingestion Types
 export interface DocumentIngestRequest {

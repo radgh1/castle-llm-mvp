@@ -10,7 +10,25 @@ import { z } from 'zod';
 import type { Message } from './schema';
 
 const app = express();
-app.use(cors());
+
+// Configure CORS for production deployments
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3001',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL || '', // Netlify frontend URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 app.post('/api/chat', async (req, res) => {

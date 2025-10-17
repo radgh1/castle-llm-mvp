@@ -5,7 +5,9 @@
     "setup": "node scripts/setup.js",
     "dev": "npm run setup && npm run dev:server & npm run dev:client",
     "dev:server": "npx tsx --no-warnings server/src/index.ts",
-    "dev:client": "cd client && npm run dev"
+    "dev:client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "node server/src/index.ts"
   },
   "dependencies": {
     "@langchain/community": "0.3.57",
@@ -28,5 +30,8 @@
     "@types/pdf-parse": "^1.1.5",
     "tsx": "4.20.6",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }

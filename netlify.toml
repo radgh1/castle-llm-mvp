@@ -1,0 +1,22 @@
+# Netlify configuration for React frontend + API proxy
+
+[build]
+command = "cd client && npm install && npm run build"
+publish = "client/dist"
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/api:splat"
+status = 200
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[dev]
+command = "cd client && npm run dev"
+port = 5173
+
+[context.production.environment]
+VITE_API_URL = ""
