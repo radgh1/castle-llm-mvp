@@ -1,6 +1,46 @@
 # 🏰 Castle LLM MVP
 
-**A full-stack AI chat application wit### **Tech Stack**
+**A fu# 4. Configure environment
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+
+# 5. Start the application
+npm run dev
+```
+
+### **Available Scripts**
+- `npm run setup` - Install all dependencies (server + client)
+- `npm run dev` - Start both client and server simultaneously
+- `npm run dev:server` - Start only the backend server
+- `npm run dev:client` - Start only the frontend client
+
+### **Environment Variables**
+Create a `.env` file with:
+```bash
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
+### **Manual Setup (Alternative)**
+```
+
+### **Available Scripts**
+- `npm run setup` - Install all dependencies (server + client)
+- `npm run dev` - Start both client and server simultaneously
+- `npm run dev:server` - Start only the backend server
+- `npm run dev:client` - Start only the frontend client
+
+### **Environment Variables**
+Create a `.env` file with:
+```bash
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
+### **Verify Installation**
+After starting both servers, verify:
+- **Frontend loads**: http://localhost:5173 (should show app interface)
+- **Backend responds**: Test API with the "Documents" tab (try uploading text)
+- **Check browser console** for any connection errors
+- **Check backend console** for API error messagesck AI chat application wit### **Tech Stack**
 - **Frontend**: React 18, TypeScript, Vite, CSS
 - **Backend**: Node.js, Express, TypeScript
 - **AI/ML**: OpenAI API, Ollama, LangChain, ChromaDB
@@ -8,7 +48,122 @@
 - **Streaming**: Server-Sent Events (SSE)
 - **Deployment**: Docker, docker-compose
 
-## 🔗 What is LangChain?
+## � Getting Started
+
+### **Prerequisites**
+- **Node.js** 18+ and npm
+- **OpenAI API Key** (for cloud models)
+- **Ollama** (optional, for local models)
+- **Docker** (optional, for ChromaDB)
+
+### **Quick Start**
+```bash
+# 1. Clone and install dependencies
+git clone <your-repo-url>
+cd castle-llm-mvp
+
+# 2. Install all dependencies (server + client)
+npm run setup
+
+# 3. Set up environment variables
+cp .env.example .env  # Edit with your API keys
+
+# 4. Start both client and server
+npm run dev
+```
+
+### **Important: Running Servers in Separate Terminals**
+
+⚠️ **Best Practice**: Start backend and frontend in separate terminal windows for better visibility:
+
+**Terminal 1 (Backend):**
+```bash
+npm run dev:server
+# Output: Server running on port 3001
+```
+
+**Terminal 2 (Frontend):**
+```bash
+npm run dev:client
+# Output: ➜ Local: http://localhost:5173/
+```
+
+Then visit http://localhost:5173 and start using the app!
+
+### **Manual Setup (Alternative)**
+```bash
+# Install server dependencies
+npm install
+
+# Install client dependencies
+cd client && npm install && cd ..
+
+# Start servers separately
+npm run dev:server  # Terminal 1: Backend
+npm run dev:client  # Terminal 2: Frontend
+```
+
+### **Alternative: Using Docker**
+```bash
+# Start all services with docker-compose
+docker-compose up -d
+
+# Or run individual services
+docker-compose up server client
+```
+
+### **Access the Application**
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3001
+- **ChromaDB** (if using): http://localhost:8000
+
+### **Troubleshooting**
+
+**Backend Server Not Starting:**
+```bash
+# Check if port 3001 is already in use
+netstat -ano | findstr :3001
+
+# Kill the process using port 3001 (Windows)
+taskkill /PID <PID> /F
+
+# Or change the port in .env
+echo "PORT=3002" >> .env
+```
+
+**API Connection Error (ECONNRESET):**
+1. **Ensure backend is running**: Start in separate terminal
+   ```bash
+   npm run dev:server  # Terminal 1
+   npm run dev:client  # Terminal 2
+   ```
+2. **Check port availability**: Backend needs port 3001, frontend needs 5173
+3. **Verify proxy config**: Check `client/vite.config.ts` has proxy to `http://localhost:3001`
+4. **Clear node_modules** if dependencies are corrupted:
+   ```bash
+   rm -r node_modules client/node_modules
+   npm run setup
+   ```
+
+**General Issues:**
+- **Port conflicts**: Change ports in `.env` or kill processes on ports 3001/5173
+- **OpenAI errors**: Verify your API key is correct and has credits
+- **Node version**: Ensure you're using Node.js 18+
+- **Dependencies**: Run `npm run setup` if you encounter missing modules
+
+### **First Time Setup**
+1. **OpenAI Setup**: Add your API key to `.env`
+2. **Ollama Setup** (optional):
+   ```bash
+   # Install Ollama
+   curl -fsSL https://ollama.ai/install.sh | sh
+   
+   # Pull a model
+   ollama pull llama2
+   ```
+3. **Test the Chat**: Select a model and start chatting!
+
+## �🔗 What is LangChain?
 
 LangChain is a powerful framework for building applications that use Large Language Models (LLMs). It provides standardized components and patterns for connecting LLMs to external data sources, APIs, and complex workflows.
 
