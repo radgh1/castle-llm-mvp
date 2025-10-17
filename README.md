@@ -1,6 +1,76 @@
 # 🏰 Castle LLM MVP
 
-**A full-stack AI chat application with streaming responses, multiple LLM providers, and Retrieval-Augmented Generation (RAG) capabilities.**
+**A full-stack AI chat application wit### **Tech Stack**
+- **Frontend**: React 18, TypeScript, Vite, CSS
+- **Backend**: Node.js, Express, TypeScript
+- **AI/ML**: OpenAI API, Ollama, LangChain, ChromaDB
+- **Document Processing**: PDF parsing, Word document support, web scraping
+- **Streaming**: Server-Sent Events (SSE)
+- **Deployment**: Docker, docker-compose
+
+## 🔗 What is LangChain?
+
+LangChain is a powerful framework for building applications that use Large Language Models (LLMs). It provides standardized components and patterns for connecting LLMs to external data sources, APIs, and complex workflows.
+
+### **Core LangChain Components in Castle LLM MVP**
+
+#### **1. Document Loaders** 📄
+Convert various document formats into standardized text:
+- **PDF Parsing**: Extract text from PDF documents
+- **Word Documents**: Load .docx files with formatting preserved
+- **Web Scraping**: Ingest content from URLs
+- **Text Files**: Process plain text and markdown
+
+#### **2. Text Splitters** ✂️
+Intelligently break long documents into smaller chunks:
+- **Recursive Splitting**: Preserve document structure and meaning
+- **Configurable Chunk Size**: Balance context vs. token limits
+- **Overlap Control**: Maintain continuity between chunks
+
+#### **3. Vector Stores & Embeddings** 🗄️
+Transform text into searchable vector representations:
+- **Semantic Search**: Find relevant information by meaning, not keywords
+- **ChromaDB Integration**: Persistent vector storage
+- **Multiple Embedding Models**: OpenAI and Ollama embeddings
+
+#### **4. Chains & Prompt Templates** 🔗
+Reusable AI workflows and structured prompts:
+- **Conversation Summarization**: Condense long chat histories
+- **Question Answering**: Context-aware Q&A with retrieved documents
+- **Code Explanation**: Break down complex code in simple terms
+- **Creative Writing**: Generate structured content
+
+#### **5. Retrieval-Augmented Generation (RAG)** 🧠
+Combine document retrieval with LLM generation:
+```
+Document → Loader → Splitter → Embeddings → Vector Store → Retriever → LLM → Answer
+    ↓         ↓         ↓          ↓            ↓          ↓         ↓        ↓
+   PDF       Parse    Chunk     Vectorize     Store     Search   Generate  Respond
+```
+
+### **Why LangChain Matters**
+
+**Before LangChain:**
+- Basic chat with LLMs
+- Manual text processing
+- Limited document support
+- Simple prompt engineering
+
+**After LangChain:**
+- **Intelligent Document Processing**: Handle PDFs, Word docs, web pages
+- **Contextual Answers**: LLMs reference your specific documents
+- **Scalable Knowledge Bases**: Efficient vector search for large document collections
+- **Reusable AI Workflows**: Standardized patterns for summarization, Q&A, code explanation
+- **Production-Ready RAG**: Enterprise-grade retrieval-augmented generation
+
+### **Real-World Benefits**
+1. **Better Accuracy**: Answers based on your actual documents
+2. **Cost Effective**: Send only relevant context, not entire documents
+3. **Multi-Format Support**: Handle diverse document types seamlessly
+4. **Scalable Architecture**: Grow from prototype to production
+5. **Developer Experience**: Standardized patterns and components
+
+## 📡 API Referenceng responses, multiple LLM providers, and Retrieval-Augmented Generation (RAG) capabilities.**
 
 Castle LLM MVP is a modern, production-ready chat interface that demonstrates advanced AI integration patterns. Built with React, TypeScript, and Express, it provides a seamless experience for interacting with Large Language Models through both cloud APIs (OpenAI) and local models (Ollama).
 
@@ -18,10 +88,18 @@ Castle LLM MVP is a modern, production-ready chat interface that demonstrates ad
 - **Prompt Library**: Save and reuse custom prompts
 
 ### 🧠 **Retrieval-Augmented Generation (RAG)**
-- **Document Ingestion**: Add your knowledge base via API
+- **Document Ingestion**: Add your knowledge base via API or file upload
+- **Multiple Formats**: Support for PDF, DOCX, TXT, and web pages
+- **Smart Chunking**: Automatic text splitting with LangChain text splitters
 - **Vector Embeddings**: Automatic text-to-vector conversion
-- **Smart Retrieval**: Finds relevant context for better answers
 - **Persistent Storage**: ChromaDB integration for production use
+
+### 🔗 **LangChain Integration**
+- **Document Loaders**: PDF, Word, text, and web content loading
+- **Text Splitters**: Intelligent document chunking for optimal retrieval
+- **Prompt Templates**: Reusable prompt engineering patterns
+- **Chains**: Conversation summarization, Q&A, code explanation, creative writing
+- **Conversation Memory**: Context-aware multi-turn conversations
 
 ### 🎨 **Modern UI/UX**
 - **Responsive Design**: Works on desktop and mobile
@@ -53,50 +131,70 @@ Castle LLM MVP is a modern, production-ready chat interface that demonstrates ad
 - **Frontend**: React 18, TypeScript, Vite, CSS
 - **Backend**: Node.js, Express, TypeScript
 - **AI/ML**: OpenAI API, Ollama, LangChain, ChromaDB
+- **Document Processing**: PDF parsing, Word document support, web scraping
 - **Streaming**: Server-Sent Events (SSE)
 - **Deployment**: Docker, docker-compose
 
-## 🚀 Quick Start
+## � API Reference
 
-### Prerequisites
-- Node.js 18+ and npm
-- OpenAI API key (for OpenAI models)
-- Ollama (optional, for local models)
+### Chat Endpoints
+- `POST /api/chat` - Stream chat responses
+- `GET /api/prompts` - Get saved prompts
+- `POST /api/prompts` - Save custom prompts
 
-### Installation
+### RAG Endpoints
+- `POST /api/rag/upsert` - Add text documents to vector store
+- `POST /api/rag/ingest` - Ingest files (PDF, DOCX, TXT) or URLs with LangChain loaders
 
-1. **Clone and install dependencies:**
+### LangChain Chains
+- `POST /api/chains/summarize` - Summarize conversations
+- `POST /api/chains/qa` - Question answering with context
+- `POST /api/chains/explain-code` - Code explanation
+- `POST /api/chains/creative` - Creative content generation
+
+### Example API Usage
+
+#### Document Ingestion
 ```bash
-git clone <your-repo-url>
-cd castle-llm-mvp
-npm install
+# Ingest a PDF file
+curl -X POST http://localhost:3001/api/rag/ingest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "/path/to/document.pdf",
+    "chunkSize": 1000,
+    "chunkOverlap": 200
+  }'
+
+# Ingest from URL
+curl -X POST http://localhost:3001/api/rag/ingest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "https://example.com/article",
+    "metadata": {"source": "web", "author": "John Doe"}
+  }'
 ```
 
-2. **Set up environment:**
+#### Using LangChain Chains
 ```bash
-cp .env.example .env
-# Edit .env with your OpenAI API key
+# Summarize a conversation
+curl -X POST http://localhost:3001/api/chains/summarize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "conversation": [
+      {"role": "user", "content": "Hello"},
+      {"role": "assistant", "content": "Hi there!"},
+      {"role": "user", "content": "How are you?"}
+    ]
+  }'
+
+# Explain code
+curl -X POST http://localhost:3001/api/chains/explain-code \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "function fibonacci(n) { return n <= 1 ? n : fibonacci(n-1) + fibonacci(n-2); }",
+    "language": "javascript"
+  }'
 ```
-
-3. **Start the backend:**
-```bash
-npm run dev:server
-# Server runs on http://localhost:3001
-```
-
-4. **Start the frontend (new terminal):**
-```bash
-cd client
-npm run dev
-or 
-npm run dev:client
-
-# Client runs on http://localhost:5173
-```
-
-5. **Open your browser:**
-   - Navigate to http://localhost:5173
-   - Start chatting!
 
 ## 📖 How to Use
 

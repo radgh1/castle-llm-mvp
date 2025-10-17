@@ -1,0 +1,11 @@
+Introduction to Artificial Intelligence
+
+Artificial Intelligence (AI) is a branch of computer science that aims to create machines capable of intelligent behavior. AI systems can learn from data, recognize patterns, and make decisions with minimal human intervention.
+
+Key Concepts:
+- Machine Learning: Algorithms that improve through experience
+- Deep Learning: Neural networks with multiple layers
+- Natural Language Processing: Understanding and generating human language
+- Computer Vision: Interpreting visual information
+
+AI has applications in healthcare, finance, transportation, and many other fields.
