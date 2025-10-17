@@ -1,0 +1,19 @@
+:root { --bg: #0b0d10; --muted: #9aa1ac; --panel: #171b22; --line: #242a33; --fg: #e6edf3; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: Inter, system-ui, sans-serif; }
+.container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+header { margin-bottom: 16px; }
+.controls, .prompts, .chat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+.controls label, .prompts label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.controls textarea { width: 100%; }
+.controls select, .controls input[type="range"], .prompts input, .prompts textarea { width: 100%; padding: 8px; background: #0f1319; border: 1px solid var(--line); color: var(--fg); border-radius: 8px; }
+.controls .toggles { margin-top: 8px; }
+.prompts h3 { margin-top: 0; }
+.prompt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.chat .history { height: 50vh; overflow: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.msg { padding: 10px 12px; border-radius: 12px; max-width: 80%; }
+.msg.user { align-self: flex-end; background: #294a7a; }
+.msg.assistant { align-self: flex-start; background: #1f252e; }
+.composer { display: flex; gap: 8px; }
+.composer input { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: #0f1319; color: var(--fg); }
+.composer button { padding: 12px 16px; border-radius: 10px; border: 1px solid var(--line); background: #22314a; color: var(--fg); cursor: pointer; }
