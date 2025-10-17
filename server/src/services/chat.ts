@@ -12,7 +12,9 @@ export async function streamChat(req: ChatRequest, res: Response) {
 
     const isOpenAI = model.startsWith('openai:');
     const provider = isOpenAI ? withOpenAI : withOllama;
-    const providerModel = isOpenAI ? model.split(':')[1] : model;
+    
+    // Extract model name after the provider prefix
+    const providerModel = model.split(':').slice(1).join(':') as any;
 
     // open SSE stream
     res.write(`event: open\n`);

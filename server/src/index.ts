@@ -44,20 +44,57 @@ app.post('/api/rag/upsert', async (req, res) => {
 // Enhanced document ingestion with LangChain loaders
 app.post('/api/rag/ingest', async (req, res) => {
   const schema = z.object({
-    source: z.string().min(1), // File path or URL
+    type: z.enum(['url', 'text', 'file']).optional(),
+    content: z.string().optional(),
+    url: z.string().optional(),
+    filename: z.string().optional(),
+    source: z.string().optional(), // Legacy format support
     chunkSize: z.number().optional(),
     chunkOverlap: z.number().optional(),
     metadata: z.record(z.any()).optional()
   });
-  const { source, chunkSize, chunkOverlap, metadata } = schema.parse(req.body);
+  
+  const parsed = schema.parse(req.body);
+  const { type, content, url, filename, source, chunkSize, chunkOverlap, metadata } = parsed;
 
   try {
-    const result = await ingestDocument(source, {
-      chunkSize,
-      chunkOverlap,
-      metadata
+    let result;
+    
+    // Handle new frontend format
+    if (type === 'url' && url) {
+      result = await ingestDocument(url, {
+        chunkSize,
+        chunkOverlap,
+        metadata: { ...metadata, filename: filename || 'webpage' }
+      });
+    } else if (type === 'text' && content) {
+      // Direct text ingestion
+      const { Document } = await import('langchain/document');
+      const doc = new Document({
+        pageContent: content,
+        metadata: { ...metadata, filename: filename || 'text-input', source: 'direct-text' }
+      });
+      const { makeEmbeddings } = await import('./services/embeddings');
+      const embeddings = makeEmbeddings();
+      const { upsertDocuments } = await import('./services/vectorstore');
+      result = await upsertDocuments([{ text: content, metadata: doc.metadata }]);
+    } else if (source) {
+      // Legacy format
+      result = await ingestDocument(source, {
+        chunkSize,
+        chunkOverlap,
+        metadata
+      });
+    } else {
+      throw new Error('Invalid request: must provide type with content/url, or source field');
+    }
+    
+    res.json({
+      success: true,
+      message: `Document ingested successfully`,
+      documentCount: (result as any).count || 1,
+      stats: result
     });
-    res.json(result);
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -69,22 +106,57 @@ app.post('/api/rag/ingest', async (req, res) => {
 // LangChain chains endpoints
 app.post('/api/chains/summarize', async (req, res) => {
   const schema = z.object({
+    text: z.string().optional(),
     conversation: z.array(z.object({
       role: z.enum(['system', 'user', 'assistant']),
       content: z.string()
-    }))
+    })).optional(),
+    type: z.enum(['conversation', 'document', 'general']).optional(),
+    length: z.enum(['brief', 'moderate', 'detailed']).optional()
   });
-  const { conversation } = schema.parse(req.body);
+  const parsed = schema.parse(req.body);
+  const { text, conversation, type, length } = parsed;
 
   try {
-    const result = await chatChains.summarizeConversation(conversation);
-    res.json(result);
+    // Convert text format to conversation format if needed
+    let conversationToSummarize = conversation;
+    
+    if (text && !conversation) {
+      // If we have plain text, convert it to a conversation format
+      conversationToSummarize = [
+        { role: 'user' as const, content: text }
+      ];
+    }
+
+    if (!conversationToSummarize || conversationToSummarize.length === 0) {
+      return res.status(400).json({
+        error: 'Please provide either text or conversation to summarize'
+      });
+    }
+
+    const result = await chatChains.summarizeConversation(conversationToSummarize);
+    
+    res.json({
+      summary: result.response,
+      keyPoints: extractKeyPoints(result.response),
+      type: type || 'general',
+      length: length || 'moderate'
+    });
   } catch (error) {
+    console.error('Summarization error:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Summarization failed'
     });
   }
 });
+
+function extractKeyPoints(text: string): string[] {
+  return text
+    .split('\n')
+    .filter(line => line.trim().length > 0)
+    .slice(0, 10)
+    .map(line => line.replace(/^[-*•]\s*/, '').trim());
+}
 
 app.post('/api/chains/qa', async (req, res) => {
   const schema = z.object({
@@ -106,16 +178,90 @@ app.post('/api/chains/qa', async (req, res) => {
 app.post('/api/chains/explain-code', async (req, res) => {
   const schema = z.object({
     code: z.string().min(1),
-    language: z.string().min(1)
+    language: z.string().min(1),
+    context: z.string().optional()
   });
-  const { code, language } = schema.parse(req.body);
+  const { code, language, context } = schema.parse(req.body);
 
   try {
     const result = await chatChains.explainCode(code, language);
-    res.json(result);
+    
+    // Extract key points from the explanation
+    const explanation = result.response;
+    const keyPoints = explanation
+      .split('\n')
+      .filter(line => line.trim().length > 0)
+      .slice(0, 5)
+      .map(line => line.replace(/^[-*•]\s*/, '').trim());
+
+    res.json({
+      explanation,
+      keyPoints,
+      complexity: extractComplexity(explanation),
+      suggestions: extractSuggestions(explanation)
+    });
   } catch (error) {
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Code explanation failed'
+    });
+  }
+});
+
+function extractComplexity(text: string): string {
+  if (text.toLowerCase().includes('o(1)')) return 'O(1)';
+  if (text.toLowerCase().includes('o(n²)') || text.toLowerCase().includes('o(n^2)')) return 'O(n²)';
+  if (text.toLowerCase().includes('o(n)')) return 'O(n)';
+  if (text.toLowerCase().includes('o(n log n)')) return 'O(n log n)';
+  if (text.toLowerCase().includes('o(log n)')) return 'O(log n)';
+  if (text.toLowerCase().includes('high|complex|complicated')) return 'High';
+  if (text.toLowerCase().includes('simple|linear')) return 'Low';
+  return 'Medium';
+}
+
+function extractSuggestions(text: string): string[] {
+  const suggestions: string[] = [];
+  if (text.toLowerCase().includes('could be optimized')) {
+    suggestions.push('Consider optimizing for better performance');
+  }
+  if (text.toLowerCase().includes('error') || text.toLowerCase().includes('exception')) {
+    suggestions.push('Add error handling for edge cases');
+  }
+  if (text.toLowerCase().includes('loop')) {
+    suggestions.push('Review loop complexity and consider alternatives');
+  }
+  return suggestions;
+}
+
+app.post('/api/chains/creative-write', async (req, res) => {
+  const schema = z.object({
+    prompt: z.string().min(1),
+    style: z.string().optional(),
+    length: z.enum(['short', 'medium', 'long']).optional(),
+    genre: z.string().optional()
+  });
+  const { prompt, style, length, genre } = schema.parse(req.body);
+
+  try {
+    // Map frontend format to backend format
+    const type = genre || 'general';
+    const topic = prompt;
+    const lengthMap: Record<string, number> = {
+      'short': 200,
+      'medium': 500,
+      'long': 1000
+    };
+    const lengthWords = lengthMap[length || 'medium'] || 500;
+
+    const result = await chatChains.generateCreativeContent(type, topic, style, lengthWords);
+    
+    res.json({
+      content: result.response,
+      wordCount: result.response.split(/\s+/).length
+    });
+  } catch (error) {
+    console.error('Creative generation error:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Creative generation failed'
     });
   }
 });
