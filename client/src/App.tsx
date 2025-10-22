@@ -3,7 +3,6 @@ import Chat from './components/Chat';
 import Controls from './components/Controls';
 import PromptManager from './components/PromptManager';
 import DocumentUpload from './components/DocumentUpload';
-import DocumentChat from './components/DocumentChat';
 import CodeExplainer from './components/CodeExplainer';
 import CreativeWriter from './components/CreativeWriter';
 import ConversationSummarizer from './components/ConversationSummarizer';
@@ -123,12 +122,6 @@ export default function App() {
       {activeTab === 'code' && <CodeExplainer />}
       {activeTab === 'creative' && <CreativeWriter />}
       {activeTab === 'summarize' && <ConversationSummarizer chatHistory={chatHistory} />}
-
-      {/* Bottom Document Chat */}
-      <DocumentChat
-        model={model}
-        temperature={temperature}
-      />
     </div>
   );
 }
