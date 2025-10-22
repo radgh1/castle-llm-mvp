@@ -1,7 +1,7 @@
 :root { --bg: #0b0d10; --muted: #9aa1ac; --panel: #171b22; --line: #242a33; --fg: #e6edf3; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: Inter, system-ui, sans-serif; }
-.container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+.container { max-width: 1000px; margin: 0 auto; padding: 24px 24px 120px 24px; }
 header { margin-bottom: 16px; }
 header h1 { margin: 0; font-size: 28px; }
 header p { margin: 4px 0 0 0; color: var(--muted); font-size: 14px; }
@@ -766,4 +766,86 @@ header p { margin: 4px 0 0 0; color: var(--muted); font-size: 14px; }
 .example-btn.small {
   padding: 8px 12px;
   font-size: 12px;
+}
+
+/* Bottom Document Chat */
+.bottom-document-chat {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  max-height: 60vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-document-chat .chat-header {
+  margin-bottom: 12px;
+}
+
+.bottom-document-chat .chat-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+}
+
+.bottom-document-chat .chat-header p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bottom-document-chat .chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  min-height: 100px;
+  max-height: calc(60vh - 120px);
+}
+
+.bottom-document-chat .chat-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bottom-document-chat .chat-input input {
+  flex: 1;
+  padding: 10px 12px;
+  background: #0f1319;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.bottom-document-chat .chat-input input:focus {
+  border-color: #294a7a;
+  outline: none;
+}
+
+.bottom-document-chat .chat-input button {
+  padding: 10px 16px;
+  background: #294a7a;
+  border: none;
+  color: var(--fg);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.bottom-document-chat .chat-input button:hover:not(:disabled) {
+  background: #3d5a8c;
+}
+
+.bottom-document-chat .chat-input button:disabled {
+  background: var(--line);
+  cursor: not-allowed;
 }
