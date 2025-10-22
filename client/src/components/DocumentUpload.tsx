@@ -14,7 +14,6 @@ export default function DocumentUpload({ model = 'ollama:llama2', temperature = 
   const [uploadStatus, setUploadStatus] = useState('');
   const [urlInput, setUrlInput] = useState('');
   const [textInput, setTextInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'upload' | 'chat'>('upload');
   const [uploadSubTab, setUploadSubTab] = useState<'file' | 'url' | 'text'>('file');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -201,35 +200,18 @@ export default function DocumentUpload({ model = 'ollama:llama2', temperature = 
         <p><strong>RAG Pipeline:</strong> When "Use RAG" enabled in Chat: (1) User query → (2) Embedding generation → (3) Vector similarity search → (4) Top-5 documents retrieved → (5) Injected into system prompt → (6) LLM grounds response in your documents.</p>
       </div>
 
-      <div className="upload-tabs">
-        <button
-          className={activeTab === 'upload' ? 'active' : ''}
-          onClick={() => setActiveTab('upload')}
-        >
-          📤 Upload Documents
-        </button>
-        <button
-          className={activeTab === 'chat' ? 'active' : ''}
-          onClick={() => setActiveTab('chat')}
-        >
-          💬 Chat with Documents
-        </button>
+      <div className="rag-controls">
+        <label className="rag-checkbox">
+          <input
+            type="checkbox"
+            checked={useRag}
+            onChange={(e) => onRagChange?.(e.target.checked)}
+          />
+          <span className="checkmark"></span>
+          Enable RAG for uploaded documents
+        </label>
+        <p className="rag-tip">💡 When enabled, your documents will be searchable in conversations across all tabs</p>
       </div>
-
-      {activeTab === 'upload' && (
-        <>
-          <div className="rag-controls">
-            <label className="rag-checkbox">
-              <input
-                type="checkbox"
-                checked={useRag}
-                onChange={(e) => onRagChange?.(e.target.checked)}
-              />
-              <span className="checkmark"></span>
-              Enable RAG for uploaded documents
-            </label>
-            <p className="rag-tip">💡 When enabled, your documents will be searchable in conversations across all tabs</p>
-          </div>
 
           <div className="upload-sub-tabs">
             <button
@@ -518,12 +500,8 @@ Quantum computers exist today but are in their infancy (NISQ - Noisy Intermediat
             </div>
           </div>
         )}
-      </div>
+        </div>
 
-              </>
-      )}
-
-      {activeTab === 'chat' && (
         <div className="document-chat">
           <div className="chat-header">
             <h3>💬 Chat with Your Documents</h3>
@@ -536,19 +514,19 @@ Quantum computers exist today but are in their infancy (NISQ - Noisy Intermediat
                 <h4>Start a conversation with your documents</h4>
                 <p>Try these example questions:</p>
                 <div className="example-buttons">
-                  <button 
+                  <button
                     className="example-btn"
                     onClick={() => sendChatMessage("What are the main topics covered in the documents?")}
                   >
                     📋 Document Summary
                   </button>
-                  <button 
+                  <button
                     className="example-btn"
                     onClick={() => sendChatMessage("Explain the key concepts from the uploaded content")}
                   >
                     🔑 Key Concepts
                   </button>
-                  <button 
+                  <button
                     className="example-btn"
                     onClick={() => sendChatMessage("What are the practical applications mentioned?")}
                   >
@@ -569,28 +547,27 @@ Quantum computers exist today but are in their infancy (NISQ - Noisy Intermediat
           </div>
 
           <div className="chat-input">
-            <input 
-              value={chatInput} 
-              onChange={e => setChatInput(e.target.value)} 
-              placeholder="Ask about your documents..." 
-              onKeyDown={(e) => { if (e.key === 'Enter' && !isChatting) sendChatMessage(); }} 
+            <input
+              value={chatInput}
+              onChange={e => setChatInput(e.target.value)}
+              placeholder="Ask about your documents..."
+              onKeyDown={(e) => { if (e.key === 'Enter' && !isChatting) sendChatMessage(); }}
               disabled={isChatting}
             />
-            <button 
-              onClick={() => sendChatMessage()} 
+            <button
+              onClick={() => sendChatMessage()}
               disabled={isChatting || !chatInput.trim()}
             >
               {isChatting ? '⏳' : '📤'}
             </button>
           </div>
         </div>
-      )}
 
-      {uploadStatus && activeTab === 'upload' && (
-        <div className={`upload-status ${uploadStatus.includes('Error') ? 'error' : 'success'}`}>
-          {uploadStatus}
-        </div>
-      )}
+        {uploadStatus && (
+          <div className={`upload-status ${uploadStatus.includes('Error') ? 'error' : 'success'}`}>
+            {uploadStatus}
+          </div>
+        )}
     </section>
   );
 }
