@@ -331,9 +331,114 @@ header p { margin: 4px 0 0 0; color: var(--muted); font-size: 14px; }
   padding: 24px;
 }
 
-.document-upload h2 {
-  margin-top: 0;
-  font-size: 20px;
+.doc-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 24px;
+}
+
+.doc-header p {
+  margin: 0 0 20px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Use Cases Grid */
+.use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.use-case-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.use-case-card:hover {
+  border-color: #294a7a;
+  box-shadow: 0 4px 12px rgba(41, 74, 122, 0.15);
+}
+
+.use-case-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--fg);
+}
+
+.use-case-desc {
+  margin: 0 0 16px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.use-case-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-field {
+  padding: 10px 12px;
+  background: #0f1319;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.input-field:focus {
+  border-color: #294a7a;
+  outline: none;
+}
+
+.input-field.text-area {
+  resize: vertical;
+  min-height: 100px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.action-button {
+  padding: 10px 16px;
+  background: #294a7a;
+  border: none;
+  color: var(--fg);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.action-button:hover:not(:disabled) {
+  background: #3d5a8c;
+}
+
+.action-button:disabled {
+  background: var(--line);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.use-case-example {
+  margin: 12px 0 0 0;
+  padding: 12px;
+  background: rgba(100, 150, 200, 0.05);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.use-case-example strong {
+  color: var(--fg);
+  display: block;
+  margin-bottom: 4px;
 }
 
 .rag-info {
