@@ -200,17 +200,11 @@ export default function DocumentUpload({ model = 'ollama:llama2', temperature = 
         <p><strong>RAG Pipeline:</strong> When "Use RAG" enabled in Chat: (1) User query → (2) Embedding generation → (3) Vector similarity search → (4) Top-5 documents retrieved → (5) Injected into system prompt → (6) LLM grounds response in your documents.</p>
       </div>
 
-      <div className="rag-controls">
-        <label className="rag-checkbox">
-          <input
-            type="checkbox"
-            checked={useRag}
-            onChange={(e) => onRagChange?.(e.target.checked)}
-          />
-          <span className="checkmark"></span>
-          Enable RAG for uploaded documents
+      <div className="toggles">
+        <label>
+          <input type="checkbox" checked={useRag} onChange={(e) => onRagChange?.(e.target.checked)} />
+          <strong>Use RAG</strong> <em>(Search uploaded documents)</em>
         </label>
-        <p className="rag-tip">💡 When enabled, your documents will be searchable in conversations across all tabs</p>
       </div>
 
           <div className="upload-sub-tabs">
