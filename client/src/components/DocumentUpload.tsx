@@ -325,39 +325,96 @@ Quantum computers exist today but are in their infancy (NISQ - Noisy Intermediat
                 </button>
                 <button 
                   className="example-btn small"
-                  onClick={() => setTextInput(`# TypeScript Best Practices
+                  onClick={() => setTextInput(`# Modern HR Best Practices
 
-## Type Safety First
-Always prefer explicit types over implicit 'any' types. Use interfaces and type aliases to define data structures.
+## Recruitment & Talent Acquisition
 
-## Interface vs Type
-- Use \`interface\` for object shapes that may be extended
-- Use \`type\` for unions, primitives, and complex type expressions
+### Effective Job Descriptions
+- Use clear, concise language that accurately reflects the role
+- Include key responsibilities, required skills, and growth opportunities
+- Specify must-have vs. nice-to-have qualifications
+- Highlight company culture and values
 
-## Generic Constraints
-\`\`\`typescript
-function processItems<T extends { id: string }>(items: T[]): T[] {
-  return items.filter(item => item.id.length > 0);
-}
-\`\`\`
+### Candidate Experience
+- Respond to applications within 48 hours
+- Provide clear timeline for hiring process
+- Offer constructive feedback to unsuccessful candidates
+- Use applicant tracking systems for efficient communication
 
-## Utility Types
-Leverage built-in utilities like \`Partial<T>\`, \`Required<T>\`, \`Pick<T, K>\`, and \`Omit<T, K>\`.
+## Employee Onboarding
 
-## Error Handling
-Use discriminated unions for error states:
-\`\`\`typescript
-type Result<T> = { success: true; data: T } | { success: false; error: string };
-\`\`\`
+### 90-Day Integration Plan
+1. **First Day**: Welcome, paperwork, tour, introductions
+2. **First Week**: Role expectations, tools training, team meetings
+3. **First Month**: Performance goals, feedback sessions, skill development
+4. **First Quarter**: Performance review, career planning, mentorship
 
-## Performance Tips
-- Avoid unnecessary type assertions
-- Use \`const\` assertions for literal types
-- Prefer \`readonly\` for immutable data`)}
+### Key Success Factors
+- Clear communication of expectations
+- Regular check-ins and feedback
+- Access to necessary tools and resources
+- Buddy/mentor system for support
+
+## Performance Management
+
+### Continuous Feedback Model
+- Regular one-on-one meetings (bi-weekly)
+- Real-time recognition of achievements
+- Constructive feedback on improvement areas
+- Goal setting and progress tracking
+
+### Performance Review Process
+1. Self-assessment by employee
+2. Manager evaluation and calibration
+3. Collaborative discussion and goal setting
+4. Development plan creation
+5. Follow-up and progress monitoring
+
+## Employee Development
+
+### Learning & Development
+- Individual development plans
+- Cross-training opportunities
+- Conference and certification support
+- Leadership development programs
+
+### Career Progression
+- Clear career paths and ladders
+- Internal job posting system
+- Succession planning
+- Skills gap analysis and training
+
+## Workplace Culture
+
+### Diversity, Equity & Inclusion
+- Unconscious bias training
+- Employee resource groups
+- Inclusive hiring practices
+- Regular DEI assessments
+
+### Work-Life Balance
+- Flexible work arrangements
+- Mental health support
+- Paid time off policies
+- Wellness programs
+
+## Compensation & Benefits
+
+### Competitive Packages
+- Market research and benchmarking
+- Transparent salary ranges
+- Performance-based incentives
+- Comprehensive benefits (health, dental, retirement)
+
+### Total Rewards Strategy
+- Base salary + variable pay
+- Health and wellness benefits
+- Professional development support
+- Work-life balance perks`)}
                   disabled={isUploading}
-                  title="Load sample text about TypeScript best practices"
+                  title="Load sample text about HR best practices"
                 >
-                  🔷 TypeScript Guide
+                  � HR Best Practices
                 </button>
               </div>
             </div>
