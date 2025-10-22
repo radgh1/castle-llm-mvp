@@ -98,8 +98,6 @@ export default function App() {
           <Controls
             system={system}
             onSystem={setSystem}
-            useRag={useRag}
-            onRag={setUseRag}
             promptName={promptName}
             onPrompt={setPromptName}
           />
@@ -115,7 +113,12 @@ export default function App() {
         </>
       )}
 
-      {activeTab === 'documents' && <DocumentUpload />}
+      {activeTab === 'documents' && <DocumentUpload 
+        model={model}
+        temperature={temperature}
+        useRag={useRag}
+        onRagChange={setUseRag}
+      />}
       {activeTab === 'code' && <CodeExplainer />}
       {activeTab === 'creative' && <CreativeWriter />}
       {activeTab === 'summarize' && <ConversationSummarizer chatHistory={chatHistory} />}
