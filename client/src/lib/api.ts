@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import { API_BASE } from './config';
 
 // Document Ingestion Types

@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import { useEffect, useState } from 'react';
 
 export default function PromptManager({ onPick, onSystem }: { onPick: (name?: string) => void; onSystem: (s: string) => void }) {

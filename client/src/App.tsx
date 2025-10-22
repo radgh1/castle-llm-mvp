@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import { useState } from 'react';
 import Chat from './components/Chat';
 import Controls from './components/Controls';

@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import { useEffect, useRef, useState } from 'react';
 
 export default function Chat({ model, temperature, system, useRag, promptName, onUpdateHistory }: any) {
@@ -61,13 +60,14 @@ export default function Chat({ model, temperature, system, useRag, promptName, o
       <div className="chat-header">
         <h3>💬 Chat Interface</h3>
         <div className="tech-specs">
-          <p><strong>Stack:</strong> React 18 + TypeScript • Server-Sent Events (SSE) Streaming • LangChain Integration</p>
-          <p><strong>What it does:</strong> Real-time conversational interface with streaming token generation. Supports multi-model switching (OpenAI GPT-4/3.5, Ollama local models). Features system prompt injection, RAG integration, and conversation history tracking. Backend uses LangChain chains for message handling with temperature-based response tuning.</p>
+          <p><strong>Tech Stack:</strong> React 18 + TypeScript (Frontend) • Express.js + TypeScript (Backend) • LangChain (RAG & LLM Integration) • ChromaDB (Vector Storage) • OpenAI & Ollama (LLM Providers)</p>
+          <p><strong>What it does:</strong> Real-time conversational interface with streaming token generation. Supports multi-model switching (OpenAI GPT-4/3.5, Ollama local models). Features system prompt injection, RAG integration for document-based responses, and conversation history tracking. Backend uses LangChain chains for message handling with temperature-based response tuning.</p>
           <p><strong>Key Features:</strong> 
             • Persistent chat examples for quick iteration 
             • Global model/temperature controls 
-            • RAG-enabled document retrieval 
+            • RAG-enabled document retrieval from uploaded files/URLs 
             • SSE streaming for low-latency responses
+            • Vector embeddings for semantic search
           </p>
         </div>
       </div>
