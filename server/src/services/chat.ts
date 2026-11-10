@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import type { Response } from 'express';
 import { ChatRequest } from '../schema';
 import { withOpenAI } from '../providers/openai';

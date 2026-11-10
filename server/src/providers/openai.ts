@@ -13,15 +13,15 @@ export async function withOpenAI(opts: {
   const { model, system, messages, temperature, onToken } = opts;
   const apiKey = process.env.OPENAI_API_KEY!;
 
-  const payload = {
+  const payload: Record<string, unknown> = {
     model,
     messages: [
       { role: 'system', content: system ?? 'You are a helpful assistant.' },
       ...messages.map((m) => ({ role: m.role, content: m.content }))
     ],
-    temperature,
     stream: true
   };
+  if (!model.startsWith('gpt-6')) payload.temperature = temperature;
 
   const resp = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',

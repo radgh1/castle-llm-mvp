@@ -37,6 +37,8 @@ export interface CodeExplainRequest {
   code: string;
   language?: string;
   context?: string;
+  model: string;
+  temperature: number;
 }
 
 export interface CodeExplainResponse {
@@ -52,6 +54,8 @@ export interface CreativeWriteRequest {
   style?: 'formal' | 'casual' | 'creative' | 'poetic';
   length?: 'short' | 'medium' | 'long';
   genre?: string;
+  model: string;
+  temperature: number;
 }
 
 export interface CreativeWriteResponse {
@@ -66,6 +70,8 @@ export interface SummarizeRequest {
   conversation?: ChatMessage[];
   type?: 'conversation' | 'document' | 'general';
   length?: 'brief' | 'moderate' | 'detailed';
+  model: string;
+  temperature: number;
 }
 
 export interface SummarizeResponse {
@@ -78,8 +84,19 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface ModelOption {
+  value: string;
+  label: string;
+}
+
 // API Client
 export const api = {
+  async listOllamaModels(): Promise<ModelOption[]> {
+    const response = await fetch(`${API_BASE}/models/ollama`);
+    if (!response.ok) throw new Error(`Failed to list Ollama models: ${response.statusText}`);
+    return response.json();
+  },
+
   // Document Management
   async ingestDocument(request: DocumentIngestRequest): Promise<DocumentIngestResponse> {
     const response = await fetch(`${API_BASE}/rag/ingest`, {

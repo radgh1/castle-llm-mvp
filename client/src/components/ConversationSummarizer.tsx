@@ -3,10 +3,12 @@ import { api, SummarizeRequest, SummarizeResponse, ChatMessage } from '../lib/ap
 
 interface ConversationSummarizerProps {
   chatHistory?: ChatMessage[];
+  model: string;
+  temperature: number;
   onSummaryGenerated?: (response: SummarizeResponse) => void;
 }
 
-export default function ConversationSummarizer({ chatHistory = [], onSummaryGenerated }: ConversationSummarizerProps) {
+export default function ConversationSummarizer({ chatHistory = [], model, temperature, onSummaryGenerated }: ConversationSummarizerProps) {
   const [text, setText] = useState('');
   const [type, setType] = useState('conversation');
   const [length, setLength] = useState('brief');
@@ -39,6 +41,8 @@ export default function ConversationSummarizer({ chatHistory = [], onSummaryGene
         text: contentToSummarize,
         type,
         length,
+        model,
+        temperature,
       };
 
       const response = await api.summarizeText(request);

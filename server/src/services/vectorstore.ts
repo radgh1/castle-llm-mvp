@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 import { makeEmbeddings } from './embeddings';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { Chroma } from '@langchain/community/vectorstores/chroma';

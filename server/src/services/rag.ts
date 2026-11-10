@@ -1,4 +1,3 @@
-// Content omitted for brevity; see ChatGPT document for full source.
 // LangChain-powered RAG hook with optional Chroma persistence.
 // Falls back to in-memory vector store if CHROMA_URL is not set.
 import type { Message } from '../schema';

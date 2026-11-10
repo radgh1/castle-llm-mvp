@@ -10,11 +10,20 @@ const dirs = [
 ];
 
 dirs.forEach(d => fs.mkdirSync(d, { recursive: true }));
-["index.ts","schema.ts","util.ts"].forEach(f =>
-  fs.writeFileSync(path.join("server/src", f), "")
+
+function createFileIfMissing(filePath, contents = "") {
+  try {
+    fs.writeFileSync(filePath, contents, { flag: "wx" });
+  } catch (error) {
+    if (error.code !== "EEXIST") throw error;
+  }
+}
+
+["index.ts", "schema.ts", "util.ts"].forEach(f =>
+  createFileIfMissing(path.join("server/src", f))
 );
-["App.tsx","main.tsx","styles.css"].forEach(f =>
-  fs.writeFileSync(path.join("client/src", f), "")
+["App.tsx", "main.tsx", "styles.css"].forEach(f =>
+  createFileIfMissing(path.join("client/src", f))
 );
-fs.writeFileSync(".env.example", "OPENAI_API_KEY=\n");
-console.log("✅ Castle LLM MVP structure created!");
+createFileIfMissing(".env.example", "OPENAI_API_KEY=\n");
+console.log("✅ Castle LLM MVP structure is ready!");

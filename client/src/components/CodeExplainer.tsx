@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { api, CodeExplainRequest, CodeExplainResponse } from '../lib/api';
 
 interface CodeExplainerProps {
+  model: string;
+  temperature: number;
   onExplanationGenerated?: (response: CodeExplainResponse) => void;
 }
 
-export default function CodeExplainer({ onExplanationGenerated }: CodeExplainerProps) {
+export default function CodeExplainer({ model, temperature, onExplanationGenerated }: CodeExplainerProps) {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('javascript');
   const [context, setContext] = useState('');
@@ -32,6 +34,8 @@ export default function CodeExplainer({ onExplanationGenerated }: CodeExplainerP
         code: code.trim(),
         language,
         context: context.trim() || undefined,
+        model,
+        temperature,
       };
 
       const response = await api.explainCode(request);

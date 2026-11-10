@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { api, CreativeWriteRequest, CreativeWriteResponse } from '../lib/api';
 
 interface CreativeWriterProps {
+  model: string;
+  temperature: number;
   onContentGenerated?: (response: CreativeWriteResponse) => void;
 }
 
-export default function CreativeWriter({ onContentGenerated }: CreativeWriterProps) {
+export default function CreativeWriter({ model, temperature, onContentGenerated }: CreativeWriterProps) {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('');
   const [length, setLength] = useState('medium');
@@ -38,6 +40,8 @@ export default function CreativeWriter({ onContentGenerated }: CreativeWriterPro
         style: style || undefined,
         length,
         genre: genre || undefined,
+        model,
+        temperature,
       };
 
       const response = await api.generateCreative(request);

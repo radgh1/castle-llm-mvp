@@ -168,14 +168,14 @@ Creative piece:`;
       await withOllama({
         model: this.config.model || 'llama2',
         messages,
-        temperature: this.config.temperature || 0.7,
+        temperature: this.config.temperature ?? 0.7,
         onToken,
       });
     } else {
       await withOpenAI({
         model: this.config.model || 'gpt-4o-mini',
         messages,
-        temperature: this.config.temperature || 0.7,
+        temperature: this.config.temperature ?? 0.7,
         onToken,
       });
     }
@@ -189,6 +189,24 @@ Creative piece:`;
   updateConfig(config: Partial<ChainConfig>) {
     this.config = { ...this.config, ...config };
   }
+}
+
+export function createChatChains(model = 'openai:gpt-4o-mini', temperature = 0.7): ChatChains {
+  const separator = model.indexOf(':');
+  if (separator < 1 || separator === model.length - 1) {
+    throw new Error(`Invalid model selection: ${model}`);
+  }
+
+  const provider = model.slice(0, separator);
+  if (provider !== 'openai' && provider !== 'ollama') {
+    throw new Error(`Unsupported model provider: ${provider}`);
+  }
+
+  return new ChatChains({
+    provider,
+    model: model.slice(separator + 1),
+    temperature,
+  });
 }
 
 // Export default instance

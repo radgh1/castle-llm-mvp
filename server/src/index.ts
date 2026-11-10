@@ -2,12 +2,13 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { streamChat } from './services/chat';
-import { ChatRequest } from './schema';
+import { chatRequestSchema, type ChatRequest } from './schema';
 import { loadPrompts, savePrompts } from './store/prompts';
 import { upsertDocuments, ingestDocument } from './services/vectorstore';
-import { chatChains } from './services/chains';
+import { chatChains, createChatChains } from './services/chains';
 import { z } from 'zod';
 import type { Message } from './schema';
+import fetch from 'node-fetch';
 
 const app = express();
 
@@ -30,6 +31,26 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+app.get('/api/models/ollama', async (_req, res) => {
+  try {
+    const response = await fetch('http://localhost:11434/api/tags', {
+      signal: AbortSignal.timeout(3000)
+    });
+    if (!response.ok) throw new Error(`Ollama returned ${response.status}`);
+
+    const result = await response.json() as { models?: Array<{ name?: string }> };
+    const names = [...new Set((result.models ?? [])
+      .map(model => model.name?.replace(/:latest$/, ''))
+      .filter((name): name is string => Boolean(name)))].sort((a, b) => a.localeCompare(b));
+
+    res.json(names.map(name => ({ value: `ollama:${name}`, label: name })));
+  } catch (error) {
+    res.status(503).json({
+      error: error instanceof Error ? error.message : 'Unable to reach Ollama'
+    });
+  }
+});
 
 app.post('/api/chat', async (req, res) => {
   const body: ChatRequest = req.body;
@@ -130,10 +151,12 @@ app.post('/api/chains/summarize', async (req, res) => {
       content: z.string()
     })).optional(),
     type: z.enum(['conversation', 'document', 'general']).optional(),
-    length: z.enum(['brief', 'moderate', 'detailed']).optional()
+    length: z.enum(['brief', 'moderate', 'detailed']).optional(),
+    model: chatRequestSchema.shape.model.optional(),
+    temperature: z.number().min(0).max(2).optional()
   });
   const parsed = schema.parse(req.body);
-  const { text, conversation, type, length } = parsed;
+  const { text, conversation, type, length, model, temperature } = parsed;
 
   try {
     // Convert text format to conversation format if needed
@@ -152,7 +175,7 @@ app.post('/api/chains/summarize', async (req, res) => {
       });
     }
 
-    const result = await chatChains.summarizeConversation(conversationToSummarize);
+    const result = await createChatChains(model, temperature).summarizeConversation(conversationToSummarize);
     
     res.json({
       summary: result.response,
@@ -197,12 +220,14 @@ app.post('/api/chains/explain-code', async (req, res) => {
   const schema = z.object({
     code: z.string().min(1),
     language: z.string().min(1),
-    context: z.string().optional()
+    context: z.string().optional(),
+    model: chatRequestSchema.shape.model.optional(),
+    temperature: z.number().min(0).max(2).optional()
   });
-  const { code, language, context } = schema.parse(req.body);
+  const { code, language, context, model, temperature } = schema.parse(req.body);
 
   try {
-    const result = await chatChains.explainCode(code, language);
+    const result = await createChatChains(model, temperature).explainCode(code, language);
     
     // Extract key points from the explanation
     const explanation = result.response;
@@ -255,9 +280,11 @@ app.post('/api/chains/creative-write', async (req, res) => {
     prompt: z.string().min(1),
     style: z.string().optional(),
     length: z.enum(['short', 'medium', 'long']).optional(),
-    genre: z.string().optional()
+    genre: z.string().optional(),
+    model: chatRequestSchema.shape.model.optional(),
+    temperature: z.number().min(0).max(2).optional()
   });
-  const { prompt, style, length, genre } = schema.parse(req.body);
+  const { prompt, style, length, genre, model, temperature } = schema.parse(req.body);
 
   try {
     // Map frontend format to backend format
@@ -270,7 +297,7 @@ app.post('/api/chains/creative-write', async (req, res) => {
     };
     const lengthWords = lengthMap[length || 'medium'] || 500;
 
-    const result = await chatChains.generateCreativeContent(type, topic, style, lengthWords);
+    const result = await createChatChains(model, temperature).generateCreativeContent(type, topic, style, lengthWords);
     
     res.json({
       content: result.response,
@@ -289,12 +316,14 @@ app.post('/api/chains/creative', async (req, res) => {
     type: z.string().min(1),
     topic: z.string().min(1),
     style: z.string().optional(),
-    length: z.number().optional()
+    length: z.number().optional(),
+    model: chatRequestSchema.shape.model.optional(),
+    temperature: z.number().min(0).max(2).optional()
   });
-  const { type, topic, style, length } = schema.parse(req.body);
+  const { type, topic, style, length, model, temperature } = schema.parse(req.body);
 
   try {
-    const result = await chatChains.generateCreativeContent(type, topic, style, length);
+    const result = await createChatChains(model, temperature).generateCreativeContent(type, topic, style, length);
     res.json(result);
   } catch (error) {
     res.status(500).json({
